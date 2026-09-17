@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +30,10 @@ public class WebSecurityConfig {
         http
                 .authenticationProvider(authenticationProvider())
 
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+
                 .authorizeRequests(auth -> auth
                         .antMatchers(
                                 "/",
@@ -38,6 +43,8 @@ public class WebSecurityConfig {
                                 "/css/**",
                                 "/favicon.ico"
                         ).permitAll()
+                        .antMatchers("/api/users/me").hasAnyRole("USER", "ADMIN")
+                        .antMatchers("/api/**").hasRole("ADMIN")
                         .antMatchers("/admin/**").hasRole("ADMIN")
                         .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()

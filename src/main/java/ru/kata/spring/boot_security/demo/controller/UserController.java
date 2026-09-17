@@ -11,16 +11,8 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping
-    public String userPage(Model model, Authentication authentication) {
-        model.addAttribute("user", userService
-                .findUserByUsername(authentication.getName()));
+    public String userPage() {
         return "private/user/user";
     }
 }
